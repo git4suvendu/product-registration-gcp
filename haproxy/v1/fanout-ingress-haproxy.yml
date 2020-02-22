@@ -1,0 +1,24 @@
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: fanout-ingress
+  namespace: xyz-product
+  labels:                     # Labels that will be applied to this resource
+    app: prod-user-reg-app
+  annotations:
+    kubernetes.io/ingress.class: "haproxy"
+spec:
+  rules:
+  - host: test.apps.myproduct.com
+    http:
+      paths:
+      - path: /user-reg/create/*
+        backend:
+          serviceName: prod-user-reg-create-app
+          servicePort: 8081
+#      - path: /user-reg/search/*
+#        backend:
+#          serviceName: prod-user-reg-search-app
+#          servicePort: 8082
+---

@@ -1,0 +1,22 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: fanout-ingress-nginx
+  namespace: xyz-product
+  labels:                     # Labels that will be applied to this resource
+    app: prod-user-reg-app
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-methods: "PUT, GET, POST, OPTIONS"
+    kubernetes.io/ingress.global-static-ip-name: prod-reg-static-ip  #Defined in GCP platform. A Static IP needs to be created in the GCP.
+spec:
+  rules:
+  - host: demo.apps.product.barnsleypujo.co.uk
+    http:
+      paths:
+      - path: /user-reg/create
+        backend:
+          serviceName: prod-user-reg-create-app
+          servicePort: 8081

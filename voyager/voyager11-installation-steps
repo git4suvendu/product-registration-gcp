@@ -1,0 +1,20 @@
+#Voyager 11 (Ingress Controller) Installation steps on GKE#
+===========================================================
+
+Step 1:
+kubectl create namespace voyager-controller
+
+Step2:
+kubectl create clusterrolebinding "cluster-admin-$(whoami)" \
+  --clusterrole=cluster-admin \
+  --user="$(gcloud config get-value core/account)"
+ 
+
+Step3:
+curl -fsSL https://raw.githubusercontent.com/appscode/voyager/v11.0.1/hack/deploy/voyager.sh | bash -s -- --provider=gke --namespace=voyager-controller --ingress-class=voyager
+
+
+#Voyager 11 (Ingress Controller) Un-Installation steps on GKE#
+=============================================================
+
+curl -fsSL curl -fsSL https://raw.githubusercontent.com/appscode/voyager/v11.0.1/hack/deploy/voyager.sh | bash -s -- --uninstall --namespace=voyager-controller

@@ -1,0 +1,43 @@
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: fanout-ingress-voyager
+  namespace: xyz-product
+  annotations:
+    kubernetes.io/ingress.class: voyager
+    cert-manager.io/cluster-issuer: "letsencrypt-staging-issuer"
+    cert-manager.io/acme-challenge-type: http01
+spec:
+  rules:
+  - host: apps.bauxite-viu.co.uk
+    http:
+      paths:
+      - path: /user-reg/create/*
+        backend:
+          serviceName: prod-user-reg-create-app
+          servicePort: 8081
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: fanout-ingress-voyager
+  namespace: xyz-product
+  annotations:
+    kubernetes.io/ingress.class: voyager
+    cert-manager.io/cluster-issuer: "letsencrypt-staging-issuer"
+    cert-manager.io/acme-challenge-type: http01
+spec:
+  tls:
+    - hosts:
+        - apps.bauxite-viu.co.uk
+      secretName: apps-bauxite-viu-tls
+  rules:
+  - host: apps.bauxite-viu.co.uk
+    http:
+      paths:
+      - path: /user-reg/create/*
+        backend:
+          serviceName: prod-user-reg-create-app
+          servicePort: 8081
+---

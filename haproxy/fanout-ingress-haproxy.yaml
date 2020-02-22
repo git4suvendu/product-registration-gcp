@@ -1,0 +1,58 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: fanout-ingress-haproxy
+  namespace: xyz-product
+  labels:                     # Labels that will be applied to this resource
+    app: prod-user-reg-app
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: prod-reg-static-ip  #Defined in GCP platform. A Static IP needs to be created in the GCP.
+    haproxy.org/ingress.class: "haproxy"
+    haproxy.org/load-balance: "leastconn"  #roundrobin
+    haproxy.org/forwarded-for: "enabled"
+#    certmanager.k8s.io/cluster-issuer: letsencrypt-staging-issuer
+    certmanager.k8s.io/issuer: letsencpt-stg-issuer
+    certmanager.k8s.io/acme-challenge-type: http01
+spec:
+  rules:
+  - host: apps.bauxite-viu.co.uk
+    http:
+      paths:
+      - path: /user-reg/create/*
+        backend:
+          serviceName: prod-user-reg-create-app
+          servicePort: 8081
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: fanout-ingress-haproxy
+  namespace: xyz-product
+  labels:                     # Labels that will be applied to this resource
+    app: prod-user-reg-app
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: prod-reg-static-ip  #Defined in GCP platform. A Static IP needs to be created in the GCP.
+ #   ingress.kubernetes.io/force-ssl-redirect: "true"
+    haproxy.org/ingress.class: "haproxy"
+    haproxy.org/load-balance: "leastconn"  #roundrobin
+    haproxy.org/forwarded-for: "enabled"
+#    certmanager.k8s.io/cluster-issuer: letsencrypt-staging-issuer
+    certmanager.k8s.io/issuer: letsencpt-stg-issuer
+    certmanager.k8s.io/acme-challenge-type: http01
+ #   haproxy.org/ssl-certificate: "xyz-product/prod-tls-secret"
+ #   haproxy.org/ssl-redirect: "ON"
+ #   haproxy.org/ssl-redirect-code: "303"
+spec:
+  tls:
+  - hosts:
+    - apps.bauxite-viu.co.uk
+    secretName: tls-cert-secrt
+  rules:
+  - host: apps.bauxite-viu.co.uk
+    http:
+      paths:
+      - path: /user-reg/create/*
+        backend:
+          serviceName: prod-user-reg-create-app
+          servicePort: 8081
+---

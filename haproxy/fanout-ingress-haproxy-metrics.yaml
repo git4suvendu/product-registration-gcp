@@ -1,0 +1,26 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: fanout-ingress-haproxy-metrics
+  namespace: haproxy-controller
+  labels:                     # Labels that will be applied to this resource
+    app: haproxy-metrics
+  annotations:
+    haproxy.org/forwarded-for: "enabled"
+    haproxy.org/load-balance: "roundrobin"
+    haproxy.org/ingress.class: "haproxy"
+    kubernetes.io/ingress.global-static-ip-name: haproxy-metrics-static-ip  #Defined in GCP platform. A Static IP needs to be created in the GCP.
+spec:
+  rules:
+   - http:
+      paths:
+      - path: /
+        backend:
+          serviceName: haproxy-ingress
+          servicePort: 1024
+   - http:
+      paths:
+      - path: /metrics
+        backend:
+          serviceName: haproxy-ingress
+          servicePort: 1024

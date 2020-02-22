@@ -1,0 +1,68 @@
+#Create kubernetes secret first from GCP Service account json file
+#kubectl create secret generic gcp-service-account-secret --from-file=gcp-service-account-key=gcp-service-account-key.json -n xyz-product
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: mysql-database-backup
+  namespace: xyz-product
+  labels:                     # Labels that will be applied to this resource
+    app: product-reg
+spec:
+  schedule: "*/5 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: my-database-backup
+            image: dockersuvendu/mysql-backup:latest
+            imagePullPolicy: Always
+            volumeMounts:
+                - name: service-account-key
+                  mountPath: /root/gcp-service-account-key.json
+                  subPath: gcp-service-account-key.json
+            env:
+              - name: GCP_PROJECT_NAME
+                value: "optimal-cogency-258718"               
+              - name: SERVICE_ACCOUNT_CLINET_EMAIL
+                value: "mysql-backup-creator@optimal-cogency-258718.iam.gserviceaccount.com"
+              - name: SERVICE_ACCOUNT_JSON_KEY_FILE_PATH
+                value: "/root/"           
+              - name: SERVICE_ACCOUNT_JSON_KEY_FILE_NAME
+                value: "gcp-service-account-key"      
+              - name: GCP_BUCKET_NAME
+                value:  "mysql-backup-product-reg"               
+              - name: GCP_BUCKET_DB_BACKUP_PATH
+                value:  "db-backup"                      
+              - name: GCP_BUCKET_DB_BACKUP_LOG
+                value: "db-backup-log"
+              - name: TARGET_DATABASE_HOST
+                value: "product-reg-mysql"
+              - name: TARGET_DATABASE_PORT
+                value: "3306"
+              - name: TARGET_DATABASE_NAMES
+                valueFrom:
+                    secretKeyRef:
+                        name: mysql-db-url
+                        key: database
+              - name: TARGET_DATABASE_USER
+                valueFrom:
+                    secretKeyRef:
+                        name: mysql-user-pass
+                        key: username
+              - name: TARGET_DATABASE_PASSWORD
+                valueFrom:
+                    secretKeyRef:
+                        name: mysql-user-pass
+                        key: password
+          volumes:
+            - name: service-account-key
+              secret:
+                secretName: gcp-service-account-secret
+                items:
+                - key: gcp-service-account-key
+                  path: gcp-service-account-key.json
+          restartPolicy: Never
+---
+      

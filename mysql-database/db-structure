@@ -1,0 +1,17 @@
+
+CREATE DATABASE `product` /*!40100 DEFAULT CHARACTER SET utf8mb4 */ /*!80016 DEFAULT ENCRYPTION='N' */;
+
+ 
+
+CREATE TABLE `user_registered` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `email_addr` varchar(45) NOT NULL,
+  `first_name` varchar(50) NOT NULL,
+  `last_name` varchar(50) NOT NULL,
+  `mac_addr` varchar(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email_addr_UNIQUE` (`email_addr`),
+  UNIQUE KEY `mac_addr_UNIQUE` (`mac_addr`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4  COMMENT='It will store the user details with MAC address and Email Ids';
+
+

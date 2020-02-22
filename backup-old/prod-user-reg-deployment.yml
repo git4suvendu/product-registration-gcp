@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prod-user-reg-deployment
+  namespace: xyz-product
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prod-user-reg
+  template:
+    metadata:
+      labels:
+        app: prod-user-reg
+    spec:
+      containers:
+      - name: prod-user-reg
+        image: dockersuvendu/product-user-registration:v2
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8081

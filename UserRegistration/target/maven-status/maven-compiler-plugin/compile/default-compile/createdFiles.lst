@@ -1,0 +1,9 @@
+com\product\registration\user\model\UserRecord.class
+com\product\registration\user\DAO\UserRegistrationDAOImplementation.class
+com\product\registration\user\exception\UserRegistrationExceptionController.class
+com\product\registration\user\UserRegistrationController.class
+com\product\registration\user\exception\UserRegistrationGenericException.class
+com\product\registration\user\DAO\UserRegistrationDAO.class
+com\product\registration\user\DAO\UserRowMapper.class
+com\product\registration\user\UserRegistrationApplication.class
+com\product\registration\user\RestTemplateConfig.class

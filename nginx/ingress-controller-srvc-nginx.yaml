@@ -1,0 +1,39 @@
+
+# Assign admin permissions to your account to enable cluster roles
+#https://kubernetes.github.io/ingress-nginx/deploy/
+# ACCOUNT=$(gcloud info --format='value(config.account)') kubectl create clusterrolebinding owner-cluster-admin-binding --clusterrole cluster-admin  --user $ACCOUNT
+#kubectl create clusterrolebinding cluster-admin-binding \
+#  --clusterrole cluster-admin \
+#  --user $(gcloud config get-value account)
+#kubectl create clusterrolebinding cluster-admin-binding \
+#  --clusterrole cluster-admin \
+#  --user $(gcloud config get-value account)
+# https://github.com/kubernetes/ingress-nginx/blob/master/docs/deploy/index.md
+# kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/mandatory.yaml
+
+ 
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: ingress-nginx
+  namespace: ingress-nginx
+  labels:
+    app.kubernetes.io/name: ingress-nginx
+    app.kubernetes.io/part-of: ingress-nginx
+spec:
+  externalTrafficPolicy: Local
+  type: LoadBalancer
+  selector:
+    app.kubernetes.io/name: ingress-nginx
+    app.kubernetes.io/part-of: ingress-nginx
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+    - name: https
+      port: 443
+      targetPort: https
+---
+
+#console kubectl create clusterrolebinding cluster-admin-binding --clusterrole cluster-admin --user $(gcloud config get-value account)
